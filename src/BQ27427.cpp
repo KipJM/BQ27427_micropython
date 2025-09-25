@@ -170,6 +170,13 @@ bool BQ27427::setTaperRate(uint16_t rate)
 	return writeExtendedData(BQ27427_ID_STATE, 21, trData, 2);
 }
 
+// Read the polarity of the BQ27427 current measurement.
+bool BQ27427::currentPolarity(void)
+{
+	uint8_t calBit0 = readExtendedData(BQ27427_ID_CC_CAL, 5); // Read CC_CAL[0] value
+	return (calBit0 & 0x80); // Return bit 7 (0x80) value
+}
+
 // Changes the current polarity of the BQ27427.
 bool BQ27427::changeCurrentPolarity(void) 
 {

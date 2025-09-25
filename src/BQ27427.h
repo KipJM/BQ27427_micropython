@@ -195,7 +195,14 @@ public:
 	bool setTaperRate(uint16_t rate);
 
 	/**
-	    Configures taper rate of connected battery
+	    Reads the polarity of the current measurement.
+		
+		@return true if current polarity is positive, false if negative.
+	*/
+	bool currentPolarity(void);
+
+	/**
+	    Changes the polarity of the current measurement.
 		
 		@return true if current polarity successfully changed.
 	*/
