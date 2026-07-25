@@ -1,7 +1,12 @@
 """
 ******************************************************************************
-BQ27427_Definitions.h
+BQ27427_Definitions.py
 BQ27427 Battery Fuel Gauge Definitions
+
+Translated BQ27427 Micropython Library based on BQ27427 Arduino Library
+Translated by: KIP
+Translation date: July 2026
+Repository: https://github.com/KipJM/BQ27427_micropython
 
 Adapted BQ27427 Library based on SparkFun BQ27441 Arduino Library
 Original Author: Jim Lindblom @ SparkFun Electronics
