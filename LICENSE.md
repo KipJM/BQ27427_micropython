@@ -1,14 +1,17 @@
 License Information
 ===================
 
-This library is based on the SparkFun BQ27441 Arduino Library.
+This library is based on the Arduino BQ27427 library by Edrean Ernst,
+which is based on the SparkFun BQ27441 Arduino Library.
 Original code © SparkFun Electronics, licensed under the MIT License.
 Modifications for the BQ27427 by Edrean Ernst.
+Modifications for microypthon by KIP.
 
 The MIT License (MIT)
 
 Copyright (c) 2016 SparkFun Electronics, Inc.  
 Copyright (c) 2025 Edrean Ernst
+Copyright (c) 2026 KIP
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
