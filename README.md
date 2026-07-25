@@ -3,7 +3,7 @@ BQ27427 Battery Fuel Gauge Micropython Library
 
 > Arduino library ported to micropython. README is not really modified from original repo, provided as-is.  
 > Some function names and impl. are changed to be cleaner.  
-> I wrote this all by hand. WHY
+> I wrote this by hand.[^1] WHY
 
 The Texas Instruments [BQ27427](https://www.ti.com/product/BQ27427) battery fuel gauge is a single-cell gauge that requires minimal user configuration and system microcontroller firmware development, leading to quick system bring-up -- it measures your battery's voltage to estimate its charge percentage and remaining capacity. The chip contains an internal current-sensing resistor, which allows it to measure current and power!
 
@@ -45,3 +45,5 @@ This product is _**open source**_!
 Please review the LICENSE.md file for license information. 
 
 Distributed as-is; no warranty is given.
+
+[^1]: Some clanker slave labor is used to add docstrings and whatnot
