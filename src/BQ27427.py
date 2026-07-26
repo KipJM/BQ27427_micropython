@@ -85,7 +85,7 @@ class BQ27427:
 		cap_msb = capacity >> 8
 		cap_lsb = capacity & 0x00FF
 		cap_data = bytes([cap_msb, cap_lsb])
-		return await self.write_extended_data(BQ27427_ID_STATE, 6, cap_data)
+		return await self.__write_extended_data(BQ27427_ID_STATE, 6, cap_data)
 
 	async def get_design_energy(self) -> int:
 		"""
@@ -93,7 +93,7 @@ class BQ27427:
 
 		:return: design energy in milliWattHours (mWh)
 		"""
-		return (await self.read_extended_data(BQ27427_ID_STATE, 8) << 8) | await self.read_extended_data(BQ27427_ID_STATE, 9)
+		return (await self.__read_extended_data(BQ27427_ID_STATE, 8) << 8) | await self.__read_extended_data(BQ27427_ID_STATE, 9)
 
 	async def set_design_energy(self, energy: int) -> bool:
 		"""
@@ -109,7 +109,7 @@ class BQ27427:
 		en_msb = energy >> 8
 		en_lsb = energy & 0x00FF
 		en_data = bytes([en_msb, en_lsb])
-		return await self.write_extended_data(BQ27427_ID_STATE, 8, en_data)
+		return await self.__write_extended_data(BQ27427_ID_STATE, 8, en_data)
 
 	async def get_terminate_voltage(self) -> int:
 		"""
@@ -117,7 +117,7 @@ class BQ27427:
 
 		:return: terminate voltage in millivolts (mV)
 		"""
-		return (await self.read_extended_data(BQ27427_ID_STATE, 10) << 8) | await self.read_extended_data(BQ27427_ID_STATE, 11)
+		return (await self.__read_extended_data(BQ27427_ID_STATE, 10) << 8) | await self.__read_extended_data(BQ27427_ID_STATE, 11)
 
 	async def set_terminate_voltage(self, voltage: int) -> bool:
 		"""
@@ -142,7 +142,7 @@ class BQ27427:
 		tv_lsb = voltage & 0x00ff
 		tv_data = bytes([tv_msb, tv_lsb])
 
-		return await self.write_extended_data(BQ27427_ID_STATE, 10, tv_data)
+		return await self.__write_extended_data(BQ27427_ID_STATE, 10, tv_data)
 
 	async def get_discharge_current_threshold(self) -> int:
 		"""
@@ -150,7 +150,7 @@ class BQ27427:
 
 		:return: discharge current threshold in 0.1h units
 		"""
-		return (await self.read_extended_data(BQ27427_ID_CURRENT_THRESH, 0) << 8) | await self.read_extended_data(BQ27427_ID_CURRENT_THRESH, 1)
+		return (await self.__read_extended_data(BQ27427_ID_CURRENT_THRESH, 0) << 8) | await self.__read_extended_data(BQ27427_ID_CURRENT_THRESH, 1)
 
 	async def set_discharge_current_threshold(self, value: int) -> bool:
 		"""
@@ -172,7 +172,7 @@ class BQ27427:
 		dct_lsb = value & 0x00ff
 
 		dct_data = bytes([dct_msb, dct_lsb])
-		return await self.write_extended_data(BQ27427_ID_CURRENT_THRESH, 0, dct_data)
+		return await self.__write_extended_data(BQ27427_ID_CURRENT_THRESH, 0, dct_data)
 
 	async def get_taper_voltage(self) -> int:
 		"""
@@ -180,7 +180,7 @@ class BQ27427:
 
 		:return: taper voltage in millivolts (mV)
 		"""
-		return (await self.read_extended_data(BQ27427_ID_CHEM_DATA, 8) << 8) | await self.read_extended_data(BQ27427_ID_CHEM_DATA, 9)
+		return (await self.__read_extended_data(BQ27427_ID_CHEM_DATA, 8) << 8) | await self.__read_extended_data(BQ27427_ID_CHEM_DATA, 9)
 
 	async def set_taper_voltage(self, voltage: int) -> bool:
 		"""
@@ -201,7 +201,7 @@ class BQ27427:
 		tv_msb = voltage >> 8
 		tv_lsb = voltage & 0x00ff
 		tv_data = bytes([tv_msb, tv_lsb])
-		return await self.write_extended_data(BQ27427_ID_CHEM_DATA, 8, tv_data)
+		return await self.__write_extended_data(BQ27427_ID_CHEM_DATA, 8, tv_data)
 
 	async def get_taper_rate(self) -> int:
 		"""
@@ -209,7 +209,7 @@ class BQ27427:
 
 		:return: taper rate in 0.1 h units
 		"""
-		return (await self.read_extended_data(BQ27427_ID_STATE, 21) << 8) | await self.read_extended_data(BQ27427_ID_STATE, 22)
+		return (await self.__read_extended_data(BQ27427_ID_STATE, 21) << 8) | await self.__read_extended_data(BQ27427_ID_STATE, 22)
 
 	async def set_taper_rate(self, rate: int) -> bool:
 		"""
@@ -231,7 +231,7 @@ class BQ27427:
 		tr_lsb = rate & 0x00ff
 		tr_data = bytes([tr_msb, tr_lsb])
 
-		return await self.write_extended_data(BQ27427_ID_STATE, 21, tr_data)
+		return await self.__write_extended_data(BQ27427_ID_STATE, 21, tr_data)
 
 	async def get_current_polarity(self) -> bool:
 		"""
@@ -239,7 +239,7 @@ class BQ27427:
 
 		:return: true if current polarity is positive, false if negative.
 		"""
-		cal_bit_0 = await self.read_extended_data(BQ27427_ID_CC_CAL, 5)
+		cal_bit_0 = await self.__read_extended_data(BQ27427_ID_CC_CAL, 5)
 		return bool(cal_bit_0 & 0x80) # bit 7
 
 	async def change_current_polarity(self) -> bool:
@@ -248,10 +248,10 @@ class BQ27427:
 
 		:return: true if current polarity successfully changed.
 		"""
-		cal_bit_0 = await self.read_extended_data(BQ27427_ID_CC_CAL, 5)  # Read CC_CAL[0] value
+		cal_bit_0 = await self.__read_extended_data(BQ27427_ID_CC_CAL, 5)  # Read CC_CAL[0] value
 		cal_bit_0 ^= 0x80 # Toggle bit 7 (0x80)
 		cal_data = bytes([cal_bit_0])
-		return await self.write_extended_data(BQ27427_ID_CC_CAL, 5, cal_data)
+		return await self.__write_extended_data(BQ27427_ID_CC_CAL, 5, cal_data)
 
 	# *****************************************************************************
 	# ********************** Battery Characteristics Functions ********************
@@ -263,7 +263,7 @@ class BQ27427:
 
 		:return: battery voltage in mV
 		"""
-		return self.read_word(BQ27427_COMMAND_VOLTAGE)
+		return self.__read_word(BQ27427_COMMAND_VOLTAGE)
 
 	def get_current(self, measure_type: CurrentMeasure = CurrentMeasure.AVG) -> int:
 		"""
@@ -275,11 +275,11 @@ class BQ27427:
 		"""
 		current = 0
 		if measure_type == CurrentMeasure.AVG:
-			current = self.read_word(BQ27427_COMMAND_AVG_CURRENT)
+			current = self.__read_word(BQ27427_COMMAND_AVG_CURRENT)
 		elif measure_type == CurrentMeasure.STBY:
-			current = self.read_word(BQ27427_COMMAND_STDBY_CURRENT)
+			current = self.__read_word(BQ27427_COMMAND_STDBY_CURRENT)
 		elif measure_type == CurrentMeasure.MAX:
-			current = self.read_word(BQ27427_COMMAND_MAX_CURRENT)
+			current = self.__read_word(BQ27427_COMMAND_MAX_CURRENT)
 		else:
 			raise ValueError("Invalid measure type.")
 
@@ -297,24 +297,24 @@ class BQ27427:
 		:return: specified capacity measurement in mAh.
 		"""
 		if measure_type == CapacityMeasure.REMAIN:
-			return self.read_word(BQ27427_COMMAND_REM_CAPACITY)
+			return self.__read_word(BQ27427_COMMAND_REM_CAPACITY)
 		elif measure_type == CapacityMeasure.FULL:
-			return self.read_word(BQ27427_COMMAND_FULL_CAPACITY)
+			return self.__read_word(BQ27427_COMMAND_FULL_CAPACITY)
 		elif measure_type == CapacityMeasure.AVAIL:
-			return self.read_word(BQ27427_COMMAND_NOM_CAPACITY)
+			return self.__read_word(BQ27427_COMMAND_NOM_CAPACITY)
 		elif measure_type == CapacityMeasure.AVAIL_FULL:
-			return self.read_word(BQ27427_COMMAND_AVAIL_CAPACITY)
+			return self.__read_word(BQ27427_COMMAND_AVAIL_CAPACITY)
 		elif measure_type == CapacityMeasure.REMAIN_F:
-			return self.read_word(BQ27427_COMMAND_REM_CAP_FIL)
+			return self.__read_word(BQ27427_COMMAND_REM_CAP_FIL)
 		elif measure_type == CapacityMeasure.REMAIN_UF:
-			return self.read_word(BQ27427_COMMAND_REM_CAP_UNFL)
+			return self.__read_word(BQ27427_COMMAND_REM_CAP_UNFL)
 		elif measure_type == CapacityMeasure.FULL_F:
-			return self.read_word(BQ27427_COMMAND_FULL_CAP_FIL)
+			return self.__read_word(BQ27427_COMMAND_FULL_CAP_FIL)
 		elif measure_type == CapacityMeasure.FULL_UF:
-			return self.read_word(BQ27427_COMMAND_FULL_CAP_UNFL)
+			return self.__read_word(BQ27427_COMMAND_FULL_CAP_UNFL)
 		elif measure_type == CapacityMeasure.DESIGN:
-			return ((await self.read_extended_data(BQ27427_ID_STATE, 6) << 8) |
-					await self.read_extended_data(BQ27427_ID_STATE, 7))
+			return ((await self.__read_extended_data(BQ27427_ID_STATE, 6) << 8) |
+			        await self.__read_extended_data(BQ27427_ID_STATE, 7))
 		else:
 			raise ValueError("Unknown measure type")
 
@@ -324,7 +324,7 @@ class BQ27427:
 
 		:return: average power in mAh. >0 indicates charging.
 		"""
-		value = self.read_word(BQ27427_COMMAND_AVG_POWER)
+		value = self.__read_word(BQ27427_COMMAND_AVG_POWER)
 
 		# Convert uint16_t to int16_t
 		if value >= 0x8000:
@@ -340,9 +340,9 @@ class BQ27427:
 		:return: specified state of charge measurement in %
 		"""
 		if measure_type == SocMeasure.FILTERED:
-			return self.read_word(BQ27427_COMMAND_SOC)
+			return self.__read_word(BQ27427_COMMAND_SOC)
 		elif measure_type == SocMeasure.UNFILTERED:
-			return self.read_word(BQ27427_COMMAND_SOC_UNFL)
+			return self.__read_word(BQ27427_COMMAND_SOC_UNFL)
 		else:
 			raise ValueError("Unknown measure type")
 
@@ -354,7 +354,7 @@ class BQ27427:
 			bits measurement. Defaults to PERCENT.
 		:return: specified state of health measurement in %, or status bits
 		"""
-		soh_raw = self.read_word(BQ27427_COMMAND_SOH)
+		soh_raw = self.__read_word(BQ27427_COMMAND_SOH)
 		soh_status = soh_raw >> 8
 		soh_percent = soh_raw & 0x00FF
 		if measure_type == SohMeasure.PERCENT:
@@ -374,9 +374,9 @@ class BQ27427:
 			as reported directly by the fuel gauge)
 		"""
 		if measure_type == TempMeasure.BATTERY:
-			return self.read_word(BQ27427_COMMAND_TEMP)
+			return self.__read_word(BQ27427_COMMAND_TEMP)
 		elif measure_type == TempMeasure.INTERNAL_TEMP:
-			return self.read_word(BQ27427_COMMAND_INT_TEMP)
+			return self.__read_word(BQ27427_COMMAND_INT_TEMP)
 		else:
 			raise ValueError("Unknown measure type")
 
@@ -390,7 +390,7 @@ class BQ27427:
 
 		:return: true if active-high, false if active-low
 		"""
-		return bool(await self.get_op_config() & BQ27427_OPCONFIG_GPIOPOL)
+		return bool(await self.__get_op_config() & BQ27427_OPCONFIG_GPIOPOL)
 
 	async def set_gpout_polarity(self, active_high: bool) -> bool:
 		"""
@@ -399,7 +399,7 @@ class BQ27427:
 		:param active_high: true if active-high, false if active-low
 		:return: true on success
 		"""
-		old_op_config = await self.get_op_config()
+		old_op_config = await self.__get_op_config()
 
 		# Check to see if update needed:
 		if ((active_high and (old_op_config & BQ27427_OPCONFIG_GPIOPOL)) or
@@ -413,7 +413,7 @@ class BQ27427:
 		else:
 			new_op_config &= ~BQ27427_OPCONFIG_GPIOPOL
 
-		return await self.write_op_config(new_op_config)
+		return await self.__write_op_config(new_op_config)
 
 	async def get_gpout_function(self) -> bool:
 		"""
@@ -421,7 +421,7 @@ class BQ27427:
 
 		:return: true if BAT_LOW or false if SOC_INT
 		"""
-		return bool(await self.get_op_config() & BQ27427_OPCONFIG_BATLOWEN)
+		return bool(await self.__get_op_config() & BQ27427_OPCONFIG_BATLOWEN)
 
 	async def set_gpout_function(self, function: GpoutFunction) -> bool:
 		"""
@@ -431,7 +431,7 @@ class BQ27427:
 			GpoutFunction.SOC_INT
 		:return: true on success
 		"""
-		old_op_config = await self.get_op_config()
+		old_op_config = await self.__get_op_config()
 		is_bat_low = (function == GpoutFunction.BAT_LOW)
 
 		if (is_bat_low and (old_op_config & BQ27427_OPCONFIG_BATLOWEN)) or \
@@ -444,7 +444,7 @@ class BQ27427:
 		else:
 			new_op_config &= ~BQ27427_OPCONFIG_BATLOWEN
 
-		return await self.write_op_config(new_op_config)
+		return await self.__write_op_config(new_op_config)
 
 	async def get_soc1_set_threshold(self) -> int:
 		"""
@@ -452,7 +452,7 @@ class BQ27427:
 
 		:return: state of charge value between 0 and 100%
 		"""
-		return await self.read_extended_data(BQ27427_ID_DISCHARGE, 0)
+		return await self.__read_extended_data(BQ27427_ID_DISCHARGE, 0)
 
 	async def get_soc1_clear_threshold(self) -> int:
 		"""
@@ -460,7 +460,7 @@ class BQ27427:
 
 		:return: state of charge value between 0 and 100%
 		"""
-		return await self.read_extended_data(BQ27427_ID_DISCHARGE, 1)
+		return await self.__read_extended_data(BQ27427_ID_DISCHARGE, 1)
 
 	async def set_soc1_thresholds(self, _set: int, clear: int) -> bool:
 		"""
@@ -475,7 +475,7 @@ class BQ27427:
 			min(max(_set, 0), 100),
 			min(max(clear, 0), 100)
 		])
-		return await self.write_extended_data(BQ27427_ID_DISCHARGE, 0, thresholds)
+		return await self.__write_extended_data(BQ27427_ID_DISCHARGE, 0, thresholds)
 
 	async def get_socf_set_threshold(self) -> int:
 		"""
@@ -483,7 +483,7 @@ class BQ27427:
 
 		:return: state of charge value between 0 and 100%
 		"""
-		return await self.read_extended_data(BQ27427_ID_DISCHARGE, 2)
+		return await self.__read_extended_data(BQ27427_ID_DISCHARGE, 2)
 
 	async def get_socf_clear_threshold(self) -> int:
 		"""
@@ -491,7 +491,7 @@ class BQ27427:
 
 		:return: state of charge value between 0 and 100%
 		"""
-		return await self.read_extended_data(BQ27427_ID_DISCHARGE, 3)
+		return await self.__read_extended_data(BQ27427_ID_DISCHARGE, 3)
 
 	async def set_socf_thresholds(self, _set: int, clear: int) -> bool:
 		"""
@@ -506,7 +506,7 @@ class BQ27427:
 			min(max(_set, 0), 100),
 			min(max(clear, 0), 100)
 		])
-		return await self.write_extended_data(BQ27427_ID_DISCHARGE, 2, thresholds)
+		return await self.__write_extended_data(BQ27427_ID_DISCHARGE, 2, thresholds)
 
 	def get_soc_flag(self) -> bool:
 		"""
@@ -562,7 +562,7 @@ class BQ27427:
 
 		:return: interval percentage value between 1 and 100
 		"""
-		return await self.read_extended_data(BQ27427_ID_STATE, 26)
+		return await self.__read_extended_data(BQ27427_ID_STATE, 26)
 
 	async def set_soci_delta(self, delta: int) -> bool:
 		"""
@@ -572,7 +572,7 @@ class BQ27427:
 		:return: true on success
 		"""
 		soci = bytes([min(max(delta, 0), 100)])
-		return await self.write_extended_data(BQ27427_ID_STATE, 26, soci)
+		return await self.__write_extended_data(BQ27427_ID_STATE, 26, soci)
 
 	def pulse_gpout(self) -> bool:
 		"""
@@ -580,7 +580,7 @@ class BQ27427:
 
 		:return: true on success
 		"""
-		return self.execute_control_word(BQ27427_CONTROL_PULSE_SOC_INT)
+		return self.__execute_control_word(BQ27427_CONTROL_PULSE_SOC_INT)
 
 	# *****************************************************************************
 	# *************************** Control Sub-Commands ****************************
@@ -592,7 +592,7 @@ class BQ27427:
 
 		:return: 16-bit value read from DEVICE_TYPE subcommand
 		"""
-		return self.read_control_word(BQ27427_CONTROL_DEVICE_TYPE)
+		return self.__read_control_word(BQ27427_CONTROL_DEVICE_TYPE)
 
 	# Also this can be way more simplified using config()
 	async def set_chem_id(self, chem_id: ChemistryProfile) -> bool:
@@ -605,32 +605,32 @@ class BQ27427:
 		"""
 		# Original commented section abt entering config mode is omitted
 
-		if self.is_sealed():
+		if self.__is_sealed():
 			self.seal_flag = True
-			self.unseal() # Must be unsealed before making changes
+			self.__unseal() # Must be unsealed before making changes
 
-		old_chem_id = self.read_control_word(BQ27427_CONTROL_CHEM_ID)
+		old_chem_id = self.__read_control_word(BQ27427_CONTROL_CHEM_ID)
 
-		if self.execute_control_word(BQ27427_CONTROL_SET_CFGUPDATE):
+		if self.__execute_control_word(BQ27427_CONTROL_SET_CFGUPDATE):
 			timeout = BQ72441_I2C_TIMEOUT
 			while timeout > 0 and not (self.get_flags() & BQ27427_FLAG_CFGUPMODE):
 				await asyncio.sleep_ms(1)
 				timeout -= 1
 
 			if timeout > 0:
-				if self.execute_control_word(chem_id):
+				if self.__execute_control_word(chem_id):
 					await asyncio.sleep_ms(100) # wait for the BQ27427 to process the command
-					if await self.soft_reset():
+					if await self.__soft_reset():
 						timeout = BQ72441_I2C_TIMEOUT
 						while timeout > 0 and (self.get_flags() & BQ27427_FLAG_CFGUPMODE):
 							await asyncio.sleep_ms(1)
 							timeout -= 1
 
 						if timeout > 0:
-							new_chem_id = self.read_control_word(BQ27427_CONTROL_CHEM_ID)
+							new_chem_id = self.__read_control_word(BQ27427_CONTROL_CHEM_ID)
 							if new_chem_id != old_chem_id:
 								if self.seal_flag:
-									self.seal()
+									self.__seal()
 								return True
 							return False
 
@@ -646,7 +646,7 @@ class BQ27427:
 
 		:return: ChemistryProfile enum value
 		"""
-		chem_id = self.read_control_word(BQ27427_CONTROL_CHEM_ID)
+		chem_id = self.__read_control_word(BQ27427_CONTROL_CHEM_ID)
 		return ChemistryProfile(chem_id)
 
 	async def enter_config(self, user_control: bool = True) -> bool:
@@ -661,11 +661,11 @@ class BQ27427:
 		if user_control:
 			self.user_config_control = True
 
-		if self.is_sealed():
+		if self.__is_sealed():
 			self.seal_flag = True
-			self.unseal() # Must be unsealed before making changes
+			self.__unseal() # Must be unsealed before making changes
 
-		if self.execute_control_word(BQ27427_CONTROL_SET_CFGUPDATE):
+		if self.__execute_control_word(BQ27427_CONTROL_SET_CFGUPDATE):
 			timeout = BQ72441_I2C_TIMEOUT
 			while timeout > 0 and not (self.get_flags() & BQ27427_FLAG_CFGUPMODE):
 				await asyncio.sleep_ms(1)
@@ -687,7 +687,7 @@ class BQ27427:
 		if user_control:
 			self.user_config_control = False
 
-		if await self.soft_reset():
+		if await self.__soft_reset():
 			timeout = BQ72441_I2C_TIMEOUT
 			while timeout > 0 and (self.get_flags() & BQ27427_FLAG_CFGUPMODE):
 				await asyncio.sleep_ms(1)
@@ -695,7 +695,7 @@ class BQ27427:
 
 			if timeout > 0:
 				if self.seal_flag:
-					self.seal() # Seal back up if IC was sealed coming in
+					self.__seal() # Seal back up if IC was sealed coming in
 				return True
 
 		return False
@@ -706,7 +706,7 @@ class BQ27427:
 
 		:return: 16-bit representation of flags() command register
 		"""
-		return self.read_word(BQ27427_COMMAND_FLAGS)
+		return self.__read_word(BQ27427_COMMAND_FLAGS)
 
 	def get_status(self) -> int:
 		"""
@@ -714,7 +714,7 @@ class BQ27427:
 
 		:return: 16-bit representation of CONTROL_STATUS subcommand
 		"""
-		return self.read_control_word(BQ27427_CONTROL_STATUS)
+		return self.__read_control_word(BQ27427_CONTROL_STATUS)
 
 	async def reset(self) -> bool:
 		"""
@@ -725,7 +725,7 @@ class BQ27427:
 		if not self.user_config_control:
 			await self.enter_config(False) # Enter config mode if not already in it
 
-		if self.execute_control_word(BQ27427_CONTROL_RESET):
+		if self.__execute_control_word(BQ27427_CONTROL_RESET):
 			if not self.user_config_control:
 				await self.exit_config()
 			return True
@@ -734,7 +734,7 @@ class BQ27427:
 
 	# *********** Private Functions ***********
 
-	def is_sealed(self) -> bool:
+	def __is_sealed(self) -> bool:
 		"""
 		Check if the BQ27427 is sealed or not.
 
@@ -743,15 +743,15 @@ class BQ27427:
 		stat = self.get_status()
 		return bool(stat & BQ27427_STATUS_SS)
 
-	def seal(self) -> bool:
+	def __seal(self) -> bool:
 		"""
 		Seal the BQ27427.
 
 		:return: true on success
 		"""
-		return bool(self.read_control_word(BQ27427_CONTROL_SEALED))
+		return bool(self.__read_control_word(BQ27427_CONTROL_SEALED))
 
-	def unseal(self) -> bool:
+	def __unseal(self) -> bool:
 		"""
 		Unseal the BQ27427.
 
@@ -760,19 +760,19 @@ class BQ27427:
 
 		:return: true on success
 		"""
-		if self.read_control_word(BQ27427_UNSEAL_KEY):
-			return bool(self.read_control_word(BQ27427_UNSEAL_KEY))
+		if self.__read_control_word(BQ27427_UNSEAL_KEY):
+			return bool(self.__read_control_word(BQ27427_UNSEAL_KEY))
 		return False
 
-	async def get_op_config(self) -> int:
+	async def __get_op_config(self) -> int:
 		"""
 		Read the 16-bit opConfig register from extended data.
 
 		:return: opConfig register contents
 		"""
-		return (await self.read_extended_data(BQ27427_ID_REGISTERS, 0) << 8) | await self.read_extended_data(BQ27427_ID_REGISTERS, 1)
+		return (await self.__read_extended_data(BQ27427_ID_REGISTERS, 0) << 8) | await self.__read_extended_data(BQ27427_ID_REGISTERS, 1)
 
-	async def write_op_config(self, value: int) -> bool:
+	async def __write_op_config(self, value: int) -> bool:
 		"""
 		Write the 16-bit opConfig register in extended data.
 
@@ -784,17 +784,17 @@ class BQ27427:
 		op_config_data = bytes([op_config_msb, op_config_lsb])
 
 		# OpConfig register location: BQ27427_ID_REGISTERS id, offset 0
-		return await self.write_extended_data(BQ27427_ID_REGISTERS, 0, op_config_data)
+		return await self.__write_extended_data(BQ27427_ID_REGISTERS, 0, op_config_data)
 
-	async def soft_reset(self) -> bool:
+	async def __soft_reset(self) -> bool:
 		"""
 		Issue a soft-reset to the BQ27427.
 
 		:return: true on success
 		"""
-		return self.execute_control_word(BQ27427_CONTROL_SOFT_RESET)
+		return self.__execute_control_word(BQ27427_CONTROL_SOFT_RESET)
 
-	def read_word(self, sub_address: int) -> int:
+	def __read_word(self, sub_address: int) -> int:
 		"""
 		Read a 16-bit command word from the BQ27427.
 
@@ -802,10 +802,10 @@ class BQ27427:
 		:return: 16-bit value of the command's contents
 		"""
 		data = bytearray(2)
-		self.i2c_read_bytes(sub_address, data)
+		self.__i2c_read_bytes(sub_address, data)
 		return (int(data[1]) << 8) | data[0]
 
-	def read_control_word(self, function: int) -> int:
+	def __read_control_word(self, function: int) -> int:
 		"""
 		Read a 16-bit subcommand() from the BQ27427's control().
 
@@ -817,14 +817,14 @@ class BQ27427:
 		command = bytes([sub_command_lsb, sub_command_msb])
 		data = bytearray(2)
 
-		self.i2c_write_bytes(0, command)
+		self.__i2c_write_bytes(0, command)
 
-		if self.i2c_read_bytes(0, data):
+		if self.__i2c_read_bytes(0, data):
 			return int(data[1]) << 8 | data[0]
 
 		return False
 
-	def execute_control_word(self, function: int) -> bool:
+	def __execute_control_word(self, function: int) -> bool:
 		"""
 		Execute a subcommand() from the BQ27427's control().
 
@@ -835,7 +835,7 @@ class BQ27427:
 		sub_command_lsb = function & 0x00FF
 		command = bytes([sub_command_lsb, sub_command_msb])
 
-		if self.i2c_write_bytes(0, command):
+		if self.__i2c_write_bytes(0, command):
 			return True
 		return False
 
@@ -843,44 +843,44 @@ class BQ27427:
 	# ************************** Extended Data Commands ***************************
 	# *****************************************************************************
 
-	def block_data_control(self) -> bool:
+	def __block_data_control(self) -> bool:
 		"""
 		Issue a BlockDataControl() command to enable BlockData access.
 
 		:return: true on success
 		"""
 		enable_byte = bytes([0x00])
-		return self.i2c_write_bytes(BQ27427_EXTENDED_CONTROL, enable_byte)
+		return self.__i2c_write_bytes(BQ27427_EXTENDED_CONTROL, enable_byte)
 
-	def block_data_class(self, _id: int) -> bool:
+	def __block_data_class(self, _id: int) -> bool:
 		"""
 		Issue a DataClass() command to set the data class to be accessed.
 
 		:param _id: the id number of the class
 		:return: true on success
 		"""
-		return self.i2c_write_bytes(BQ27427_EXTENDED_DATACLASS, bytes([_id]))
+		return self.__i2c_write_bytes(BQ27427_EXTENDED_DATACLASS, bytes([_id]))
 
-	def block_data_offset(self, offset: int) -> bool:
+	def __block_data_offset(self, offset: int) -> bool:
 		"""
 		Issue a DataBlock() command to set the data block to be accessed.
 
 		:param offset: offset of the data block
 		:return: true on success
 		"""
-		return self.i2c_write_bytes(BQ27427_EXTENDED_DATABLOCK, bytes([offset]))
+		return self.__i2c_write_bytes(BQ27427_EXTENDED_DATABLOCK, bytes([offset]))
 
-	def block_data_checksum(self) -> int:
+	def __read_block_data_checksum(self) -> int:
 		"""
 		Read the current checksum using BlockDataCheckSum().
 
 		:return: the 8-bit checksum value
 		"""
 		csum = bytearray(1)
-		self.i2c_read_bytes(BQ27427_EXTENDED_CHECKSUM, csum)
+		self.__i2c_read_bytes(BQ27427_EXTENDED_CHECKSUM, csum)
 		return csum[0]
 
-	def read_block_data(self, offset: int) -> int:
+	def __read_block_data(self, offset: int) -> int:
 		"""
 		Use BlockData() to read a byte from the loaded extended data.
 
@@ -889,10 +889,10 @@ class BQ27427:
 		"""
 		ret = bytearray(1)
 		address = offset + BQ27427_EXTENDED_BLOCKDATA
-		self.i2c_read_bytes(address, ret)
+		self.__i2c_read_bytes(address, ret)
 		return ret[0]
 
-	def write_block_data(self, offset: int, data: int) -> bool:
+	def __write_block_data(self, offset: int, data: int) -> bool:
 		"""
 		Use BlockData() to write a byte to an offset of the loaded data.
 
@@ -901,9 +901,9 @@ class BQ27427:
 		:return: true on success
 		"""
 		address = offset + BQ27427_EXTENDED_BLOCKDATA
-		return self.i2c_write_bytes(address, bytes([data]))
+		return self.__i2c_write_bytes(address, bytes([data]))
 
-	def compute_block_checksum(self) -> int:
+	def __compute_block_checksum(self) -> int:
 		"""
 		Read all 32 bytes of the loaded extended data and compute a
 		checksum based on the values.
@@ -911,7 +911,7 @@ class BQ27427:
 		:return: 8-bit checksum value calculated based on loaded data
 		"""
 		data = bytearray(32)
-		self.i2c_read_bytes(BQ27427_EXTENDED_BLOCKDATA, data)
+		self.__i2c_read_bytes(BQ27427_EXTENDED_BLOCKDATA, data)
 
 		csum = 0
 		for i in range(32):
@@ -920,16 +920,16 @@ class BQ27427:
 
 		return csum
 
-	def write_block_checksum(self, csum: int) -> bool:
+	def __write_block_checksum(self, csum: int) -> bool:
 		"""
 		Use the BlockDataCheckSum() command to write a checksum value.
 
 		:param csum: the 8-bit checksum to be written
 		:return: true on success
 		"""
-		return self.i2c_write_bytes(BQ27427_EXTENDED_CHECKSUM, bytes([csum]))
+		return self.__i2c_write_bytes(BQ27427_EXTENDED_CHECKSUM, bytes([csum]))
 
-	async def read_extended_data(self, class_id: int, offset: int) -> int:
+	async def __read_extended_data(self, class_id: int, offset: int) -> int:
 		"""
 		Read a byte from extended data specifying a class ID and position offset.
 
@@ -940,24 +940,24 @@ class BQ27427:
 		if not self.user_config_control:
 			await self.enter_config(False)
 
-		if not self.block_data_control():  # enable block data memory control
+		if not self.__block_data_control():  # enable block data memory control
 			return False  # Return false if enable fails
-		if not self.block_data_class(class_id):  # Write class ID using DataBlockClass()
+		if not self.__block_data_class(class_id):  # Write class ID using DataBlockClass()
 			return False
 
-		self.block_data_offset(offset // 32)  # Write 32-bit block offset (usually 0)
+		self.__block_data_offset(offset // 32)  # Write 32-bit block offset (usually 0)
 
-		self.compute_block_checksum()  # Compute checksum going in
+		self.__compute_block_checksum()  # Compute checksum going in
 		# old_csum = self.block_data_checksum()
 
-		ret_data = self.read_block_data(offset % 32)  # Read from offset (limit to 0-31)
+		ret_data = self.__read_block_data(offset % 32)  # Read from offset (limit to 0-31)
 
 		if not self.user_config_control:
 			await self.exit_config()
 
 		return ret_data
 
-	async def write_extended_data(self, class_id: int, offset: int, data: bytes) -> bool:
+	async def __write_extended_data(self, class_id: int, offset: int, data: bytes) -> bool:
 		"""
 		Write a specified number of bytes to extended data specifying a
 		class ID, position offset.
@@ -975,25 +975,25 @@ class BQ27427:
 			if not await self.enter_config(False):
 				return False  # Return false if enter_config fails
 
-		if not self.block_data_control():  # enable block data memory control
+		if not self.__block_data_control():  # enable block data memory control
 			return False  # Return false if enable fails
-		if not self.block_data_class(class_id):  # Write class ID using DataBlockClass()
+		if not self.__block_data_class(class_id):  # Write class ID using DataBlockClass()
 			return False
 
-		self.block_data_offset(offset // 32)  # Write 32-bit block offset (usually 0)
-		self.compute_block_checksum()  # Compute checksum going in
+		self.__block_data_offset(offset // 32)  # Write 32-bit block offset (usually 0)
+		self.__compute_block_checksum()  # Compute checksum going in
 		# old_csum = self.block_data_checksum()
 
 		# Write data bytes:
 		for i in range(length):
 			# Write to offset, mod 32 if offset is greater than 32
 			# The block_data_offset above sets the 32-bit block
-			if not self.write_block_data((offset % 32) + i, data[i]):
+			if not self.__write_block_data((offset % 32) + i, data[i]):
 				return False  # Return false if write_block_data fails
 
 		# Write new checksum using BlockDataChecksum (0x60)
-		new_csum = self.compute_block_checksum()  # Compute the new checksum
-		if not self.write_block_checksum(new_csum):
+		new_csum = self.__compute_block_checksum()  # Compute the new checksum
+		if not self.__write_block_checksum(new_csum):
 			return False  # Return false if checksum write fails
 
 		if not self.user_config_control:
@@ -1007,7 +1007,7 @@ class BQ27427:
 	# ************************ I2C Read and Write Routines ************************
 	# *****************************************************************************
 
-	def i2c_read_bytes(self, sub_address: int, data: bytearray) -> bool:
+	def __i2c_read_bytes(self, sub_address: int, data: bytearray) -> bool:
 		"""
 		Read a specified number of bytes over I2C at a given sub_address.
 
@@ -1018,7 +1018,7 @@ class BQ27427:
 		self.i2c.readfrom_mem_into(self.device_address, sub_address, data)
 		return True
 
-	def i2c_write_bytes(self, sub_address: int, src: bytes) -> bool:
+	def __i2c_write_bytes(self, sub_address: int, src: bytes) -> bool:
 		"""
 		Write a specified number of bytes over I2C to a given sub_address.
 

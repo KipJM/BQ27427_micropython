@@ -27,16 +27,11 @@ Original License: MIT License
 See LICENSE.md for full license terms.
 ******************************************************************************
 """
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-	from enum import IntEnum
-else:
-	IntEnum = int
+IntEnum = int
 
 from BQ27427_Definitions import *
 
-BQ72441_I2C_TIMEOUT = const(2000)
+BQ72441_I2C_TIMEOUT: int = const(2000)
 
 # Chemistry profiles
 class ChemistryProfile(IntEnum):
@@ -53,29 +48,29 @@ class CurrentMeasure(IntEnum):
 
 # Parameters for the capacity() function, to specify which capacity to read
 class CapacityMeasure(IntEnum):
-	REMAIN = 0      # Remaining Capacity (DEFAULT)
-	FULL = 1        # Full Capacity
-	AVAIL = 2       # Available Capacity
+	REMAIN     = 0  # Remaining Capacity (DEFAULT)
+	FULL       = 1  # Full Capacity
+	AVAIL      = 2  # Available Capacity
 	AVAIL_FULL = 3  # Full Available Capacity
-	REMAIN_F = 4    # Remaining Capacity Filtered
-	REMAIN_UF = 5   # Remaining Capacity Unfiltered
-	FULL_F = 6      # Full Capacity Filtered
-	FULL_UF = 7     # Full Capacity Unfiltered
-	DESIGN = 8      # Design Capacity
+	REMAIN_F   = 4  # Remaining Capacity Filtered
+	REMAIN_UF  = 5  # Remaining Capacity Unfiltered
+	FULL_F     = 6  # Full Capacity Filtered
+	FULL_UF    = 7  # Full Capacity Unfiltered
+	DESIGN     = 8  # Design Capacity
 
 # Parameters for the soc() function
 class SocMeasure(IntEnum):
-	FILTERED = 0    # State of Charge Filtered (DEFAULT)
+	FILTERED   = 0  # State of Charge Filtered (DEFAULT)
 	UNFILTERED = 1  # State of Charge Unfiltered
 
 # Parameters for the soh() function
 class SohMeasure(IntEnum):
-	PERCENT = 0   # State of Health Percentage (DEFAULT)
+	PERCENT  = 0  # State of Health Percentage (DEFAULT)
 	SOH_STAT = 1  # State of Health Status Bits
 
 # Parameters for the temperature() function
 class TempMeasure(IntEnum):
-	BATTERY = 0        # Battery Temperature (DEFAULT)
+	BATTERY       = 0  # Battery Temperature (DEFAULT)
 	INTERNAL_TEMP = 1  # Internal IC Temperature
 
 # Parameters for the setGPOUTFunction() function
