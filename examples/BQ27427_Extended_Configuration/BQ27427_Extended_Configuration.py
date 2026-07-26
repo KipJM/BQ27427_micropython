@@ -21,8 +21,8 @@ Demonstrates how to set up the BQ27427 and read state-of-charge (soc),
 battery voltage, average current, remaining capacity, average power, and
 state-of-health (soh).
 
-After uploading, open up the serial monitor to 115200 baud to view your
-battery's stats.
+This example is designed to work with the HTP4056 charger IC and
+FLY 906090-6000mAh 3.7V battery.
 
 Original License: MIT License
 See LICENSE.txt for full license terms.
@@ -38,6 +38,9 @@ import BQ27427h
 
 # Design capacity of your battery, mAh
 BATTERY_CAPACITY = 6000
+BATTERY_ENERGY = int(BATTERY_CAPACITY * 3.7) # mWh
+BATTERY_TERMINATE_VOLTAGE = 3000
+BATTERY_TAPER_CURRENT = 1200 * 0.1 # HTP4056: 1.2A max charging, CV stops at 0.1 of charging current
 
 # Change to your i2c controller + pins
 i2c = machine.I2C(0, scl=5, sda=4, freq=400000, timeout=BQ27427.BQ72441_I2C_TIMEOUT * 1000) # microseconds
@@ -56,12 +59,16 @@ async def setup_BQ27427():
 
     print("Connected to BQ27427!")
 
+    # make sure to use await!
     await lipo.enter_config(True)
     await lipo.set_capacity(BATTERY_CAPACITY)
-    if await lipo.get_current_polarity():
+    await lipo.set_design_energy(BATTERY_ENERGY)
+    if await lipo.get_current_polarity(): # reverse polarity
         await lipo.change_current_polarity()
     await lipo.set_chem_id(BQ27427h.ChemistryProfile.CHEM_B) # change to your setup
-    await lipo.set_terminate_voltage(3000) # discharge stops at 3000mV
+    await lipo.set_terminate_voltage(BATTERY_TERMINATE_VOLTAGE) # soc is considered 0% at 3000mV
+    # Taper Rate (Unit: 0.1h, basically 10*C) = Design Capacity / (0.1 * Taper Current)
+    await lipo.set_taper_rate(int(10 * BATTERY_CAPACITY / BATTERY_TAPER_CURRENT)) # soc is considered 100% at this point
     await lipo.exit_config(True)
     # taper voltage etc. not configured
 
